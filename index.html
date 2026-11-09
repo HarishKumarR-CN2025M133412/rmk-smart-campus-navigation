@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="RMK Engineering College - Smart Campus Navigation System. Find your destination and navigate the campus with confidence.">
+  <title>RMK Engineering College | Smart Campus Navigation</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Preconnect to Google Fonts for Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-crest" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="college-title">RMK Engineering College</span>
+          <span class="college-subtitle">Autonomous Institution • Affiliated to Anna University</span>
+        </div>
+      </div>
+      <div class="header-status">
+        <span class="live-pill"><span class="live-dot"></span> Campus Live</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-container">
+      <div class="badge-wrapper">
+        <span class="hero-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="badge-icon">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          Interactive Wayfinder
+        </span>
+      </div>
+      <h1 class="main-heading">Smart Campus Navigation</h1>
+      <p class="welcome-message">Find your destination. Navigate with confidence.</p>
+      
+      <!-- Search & Quick Filter Bar -->
+      <div class="search-panel">
+        <div class="search-input-wrapper">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search campus buildings, departments, hostels..." 
+            aria-label="Search campus buildings"
+            autocomplete="off"
+          >
+          <button id="clearSearchBtn" class="clear-btn" aria-label="Clear search" title="Clear search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div class="filter-chips" id="filterChips">
+          <button class="chip active" data-filter="all">All Locations</button>
+          <button class="chip" data-filter="academic">Academic Blocks</button>
+          <button class="chip" data-filter="hostel">Hostels</button>
+          <button class="chip" data-filter="facility">Facilities & Amenities</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content: Destination Grid -->
+  <main class="main-content">
+    <div class="content-container">
+      
+      <!-- Section Controls / Counter -->
+      <div class="destinations-header">
+        <div>
+          <h2 class="section-title">Select Your Destination</h2>
+          <p class="section-description">Choose a building below to view directions and campus routing.</p>
+        </div>
+        <div class="destination-count-badge" id="destinationCount">
+          Showing 16 locations
+        </div>
+      </div>
+
+      <!-- No Results Feedback -->
+      <div class="no-results hidden" id="noResults">
+        <div class="no-results-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            <line x1="8" y1="11" x2="14" y2="11"></line>
+          </svg>
+        </div>
+        <h3>No matching locations found</h3>
+        <p>Try searching with a different keyword or view all locations.</p>
+        <button id="resetSearchBtn" class="btn-secondary">Show All Locations</button>
+      </div>
+
+      <!-- Grid of Destination Cards -->
+      <div class="cards-grid" id="cardsGrid" role="radiogroup" aria-label="Campus destinations">
+        <!-- Dynamically rendered or pre-structured in JS for modularity -->
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Sticky / Bottom Floating Action Dock for Navigation -->
+  <aside class="action-dock" id="actionDock">
+    <div class="dock-container">
+      <div class="dock-selection-info">
+        <div class="dock-status-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
+            <circle cx="12" cy="9" r="2.5"></circle>
+          </svg>
+        </div>
+        <div class="dock-text">
+          <span class="dock-label">Selected Destination:</span>
+          <span class="dock-value" id="dockDestinationName">None selected</span>
+        </div>
+      </div>
+      <button class="navigate-btn" id="navigateBtn" disabled>
+        <span>Navigate</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Notification Toast Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+    <!-- Floating Chatbot Widget (RMK Campus AI Assistant) -->
+  <div class="chatbot-wrapper" id="chatbotWrapper">
+    <div class="chatbot-tooltip" id="chatbotTooltip">Need help? Ask Campus AI</div>
+    <button class="chatbot-button" id="chatbotBtn" aria-label="Open RMK Campus AI Assistant" title="Open RMK Campus AI Assistant">
+      <div class="chatbot-pulse"></div>
+      <div class="chatbot-icon-inner">
+        <!-- Chat Icon -->
+        <svg class="icon-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          <line x1="9" y1="10" x2="9.01" y2="10"></line>
+          <line x1="15" y1="10" x2="15.01" y2="10"></line>
+          <path d="M9.5 14a3.5 3.5 0 0 0 5 0"></path>
+        </svg>
+        <!-- Close (X) Icon -->
+        <svg class="icon-close hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </div>
+      <span class="chatbot-badge">AI</span>
+    </button>
+
+    <!-- Floating Chatbot Window -->
+    <div class="chatbot-window hidden" id="chatbotWindow" role="region" aria-label="RMK Campus AI Assistant">
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <div class="chat-bot-avatar" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"></path>
+              <rect x="4" y="8" width="16" height="12" rx="3"></rect>
+              <circle cx="9" cy="13" r="1.5" fill="currentColor"></circle>
+              <circle cx="15" cy="13" r="1.5" fill="currentColor"></circle>
+              <line x1="9" y1="17" x2="15" y2="17"></line>
+            </svg>
+            <span class="chat-online-dot"></span>
+          </div>
+          <div>
+            <h3 class="chat-title">RMK Campus AI</h3>
+            <p class="chat-subtitle">Smart Campus Assistant • Online</p>
+          </div>
+        </div>
+        <div class="chat-header-actions">
+          <button type="button" class="chat-btn-header" id="clearChatBtn" title="Clear conversation" aria-label="Clear conversation">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+          <button type="button" class="chat-btn-header" id="closeChatBtn" title="Close chat window" aria-label="Close chat window">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Suggestion Chips (Prompt Section 5) -->
+      <div class="chat-suggestions-bar" id="chatSuggestionsBar" aria-label="Quick questions">
+        <button type="button" class="chat-chip" data-query="Where is the library?">Find Library</button>
+        <button type="button" class="chat-chip" data-query="How do I reach the auditorium?">Find Auditorium</button>
+        <button type="button" class="chat-chip" data-query="Where is the Boys Mess?">Find Boys Mess</button>
+        <button type="button" class="chat-chip" data-query="Where is the Girls Mess?">Find Girls Mess</button>
+        <button type="button" class="chat-chip" data-query="Where are the hostels?">Find Hostels</button>
+        <button type="button" class="chat-chip" data-query="Where is the playground?">Find Playground</button>
+      </div>
+
+      <!-- Scrollable Message Body -->
+      <div class="chat-messages" id="chatMessages" role="log" aria-live="polite">
+        <!-- Rendered dynamically by chatbot.js -->
+      </div>
+
+      <!-- Typing Indicator -->
+      <div class="chat-typing-indicator hidden" id="chatTypingIndicator" aria-hidden="true">
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-label">Campus AI is typing...</span>
+      </div>
+
+      <!-- Chat Input Form -->
+      <form class="chat-input-form" id="chatInputForm">
+        <input 
+          type="text" 
+          class="chat-input" 
+          id="chatInput" 
+          placeholder="Ask where a building or facility is..." 
+          aria-label="Ask Campus Assistant" 
+          autocomplete="off"
+        />
+        <button type="submit" class="chat-send-btn" id="chatSendBtn" aria-label="Send message" title="Send message">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-info">
+        <p class="footer-title">RMK Engineering College</p>
+        <p class="footer-copy">RSM Nagar, Kavaraipettai, Gummidipoondi Taluk, Tiruvallur District, Tamil Nadu 601206</p>
+      </div>
+      <div class="footer-meta">
+        <p>© 2026 RMK Engineering College. Smart Campus Navigation System.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="chatbot.js"></script>
+</body>
+</html>
+

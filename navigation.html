@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive Campus Navigation & Walking Routes - RMK Engineering College.">
+  <title>Campus Navigation & Walking Route | RMK Engineering College</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="navigation-page">
+
+  <!-- Top Navigation Header -->
+  <header class="site-header nav-header">
+    <div class="header-container">
+      <div class="header-left">
+        <a href="index.html" class="back-home-btn" id="backHomeBtn" title="Return to Homepage" aria-label="Back to Home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>Back to Home</span>
+        </a>
+        <div class="nav-brand-divider" aria-hidden="true"></div>
+        <div class="brand">
+          <div class="brand-crest" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+              <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="college-title">RMK Engineering College</span>
+            <span class="college-subtitle">Interactive Campus Navigation</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Destination Selector for Touchscreen Kiosks -->
+      <div class="header-right">
+        <div class="quick-dest-selector">
+          <label for="destinationSelect" class="sr-only">Choose Destination</label>
+          <select id="destinationSelect" class="kiosk-select" aria-label="Select destination">
+            <option value="">-- Choose a Destination --</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Destination Status Banner -->
+  <section class="nav-status-banner" id="statusBanner">
+    <div class="status-container">
+      
+      <!-- When a destination IS selected -->
+      <div class="route-info-card" id="routeInfoCard">
+        <div class="route-endpoints">
+          <!-- Start point -->
+          <div class="endpoint start-point">
+            <div class="endpoint-icon start-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="12" r="10"></circle>
+              </svg>
+            </div>
+            <div class="endpoint-text">
+              <span class="endpoint-tag">Starting Location</span>
+              <strong class="endpoint-name">Main Entrance (You are here)</strong>
+            </div>
+          </div>
+
+          <div class="route-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </div>
+
+          <!-- Target point -->
+          <div class="endpoint target-point">
+            <div class="endpoint-icon target-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
+                <circle cx="12" cy="9" r="2.5"></circle>
+              </svg>
+            </div>
+            <div class="endpoint-text">
+              <span class="endpoint-tag">Selected Destination</span>
+              <strong class="endpoint-name" id="destinationTitle">Select a Building</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="route-meta">
+          <span class="meta-pill" id="destinationCategory">Academic Block</span>
+          <span class="meta-pill meta-route-status">
+            <span class="route-live-dot"></span>
+            <span>Route Active</span>
+          </span>
+          <button class="btn-clear-selection" id="clearSelectionBtn" title="Clear selection">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+            <span>Deselect</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- When NO destination is selected -->
+      <div class="no-selection-banner hidden" id="noSelectionBanner">
+        <div class="no-selection-content">
+          <div class="pulse-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <div class="no-selection-text">
+            <h3>No Destination Selected</h3>
+            <p>Select a destination on the map or from the list to view the walking route and directions.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Main Navigation Content: Map & Route Information Panel Side-by-Side -->
+  <main class="navigation-content-wrapper">
+    <div class="navigation-layout-grid">
+      
+      <!-- Left Column: Interactive Map Canvas -->
+      <section class="map-column" aria-label="Campus Map View">
+        <div class="map-outer-wrapper">
+          
+          <!-- Map Controls (Zoom / Fullscreen / Reset for Kiosks) -->
+          <div class="map-controls" role="toolbar" aria-label="Map zoom controls">
+            <button id="zoomInBtn" class="map-ctrl-btn" title="Zoom In" aria-label="Zoom In">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+            <button id="zoomOutBtn" class="map-ctrl-btn" title="Zoom Out" aria-label="Zoom Out">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+            <button id="resetViewBtn" class="map-ctrl-btn" title="Reset View" aria-label="Reset View">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <path d="M3 3v5h5"></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Map Viewport -->
+          <div class="map-viewport" id="mapViewport">
+            <div class="map-canvas-container" id="mapCanvasContainer">
+              
+              <!-- Background Campus Map Image -->
+              <img 
+                id="campusMapImg" 
+                src="Images/rmk-campus-map.png" 
+                alt="RMK Engineering College Campus Overview Map"
+                class="campus-map-image"
+                draggable="false"
+                onerror="this.src='Images/campus-map.jpeg';"
+              >
+
+              <!-- SVG Overlay for Predefined Route Drawing & Directional Arrows (viewBox: 1536 x 1024) -->
+              <svg class="map-svg-overlay" id="mapSvgOverlay" viewBox="0 0 1536 1024" preserveAspectRatio="xMidYMid meet" aria-label="Walking route overlay">
+                <defs>
+                  <!-- Directional Arrow Marker for Route -->
+                  <marker id="routeArrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                    <path d="M 1 2 L 8 5 L 1 8 Z" fill="#ffffff" stroke="#0369a1" stroke-width="0.8" />
+                  </marker>
+                  <!-- Blue Arrow Marker for Path Head -->
+                  <marker id="routeHeadArrow" viewBox="0 0 12 12" refX="6" refY="6" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M 2 2 L 10 6 L 2 10 Z" fill="#0284c7" stroke="#ffffff" stroke-width="1.5" />
+                  </marker>
+                </defs>
+
+                <!-- Group for Route Paths -->
+                <g id="routePathsGroup">
+                  <!-- Underlying path glow -->
+                  <path id="routeGlowPath" class="route-glow-path" d="" />
+                  <!-- Main blue walking route path -->
+                  <path id="routeMainPath" class="route-main-path" d="" />
+                  <!-- Animated walking dash overlay -->
+                  <path id="routeDashPath" class="route-dash-path" d="" />
+                  <!-- Directional Arrow Elements Group -->
+                  <g id="routeArrowsGroup"></g>
+                  <!-- Junction Waypoints Group -->
+                  <g id="routeWaypointsGroup"></g>
+                  <!-- Animated Route Runner Beacon -->
+                  <g id="routeRunner" class="route-runner-beacon hidden">
+                    <circle r="12" class="runner-halo"></circle>
+                    <circle r="6" class="runner-core"></circle>
+                  </g>
+                </g>
+              </svg>
+
+              <!-- Interactive Markers Layer (Positioned with percentage coordinates) -->
+              <div class="map-markers-layer" id="markersLayer">
+                
+                <!-- Main Entrance Start Marker (Red) -->
+                <div 
+                  class="map-marker start-marker" 
+                  id="startMarker" 
+                  style="left: 50.9%; top: 89.2%;" 
+                  tabindex="0"
+                  role="button"
+                  aria-label="Starting Location: Main Entrance (You are here)"
+                >
+                  <div class="marker-pulse-ring red-pulse"></div>
+                  <div class="marker-pill-label start-pill">
+                    <span class="pill-dot red-dot"></span>
+                    <span>You are here</span>
+                  </div>
+                  <div class="marker-pin start-pin">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
+                      <circle cx="12" cy="9" r="2.5" fill="#ffffff"></circle>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Destination markers dynamically injected by navigation.js -->
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Map Legend (Bottom-Left) -->
+          <div class="map-legend" id="mapLegend">
+            <div class="legend-header">Campus Map Guide</div>
+            <div class="legend-items">
+              <div class="legend-item">
+                <span class="legend-color-dot red-legend-dot"></span>
+                <span class="legend-text"><strong>Red Marker:</strong> Main Entrance (Start)</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-color-dot blue-legend-dot"></span>
+                <span class="legend-text"><strong>Blue Marker:</strong> Selected Destination</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-route-line"></span>
+                <span class="legend-text"><strong>Blue Route:</strong> Walking Pathway</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Touch Instruction Bar -->
+          <div class="map-touch-hint">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span>Touch or click any building marker on the map to switch your destination.</span>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Right Column: Route Information Panel Beside the Map -->
+      <aside class="route-sidebar-panel" id="routeSidebarPanel" aria-label="Route Information and Walking Instructions">
+        
+        <!-- Active Route Card -->
+        <div class="route-panel-card" id="routePanelCard">
+          
+          <div class="panel-header">
+            <div class="panel-header-title">
+              <div class="panel-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                </svg>
+              </div>
+              <div>
+                <h2>Walking Route Guide</h2>
+                <p class="panel-subtitle">Follow the campus pathways</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Route Endpoints Box: Starting Point & Destination -->
+          <div class="route-panel-endpoints">
+            <div class="panel-endpoint-item">
+              <div class="endpoint-indicator start-indicator" aria-hidden="true"></div>
+              <div class="endpoint-details">
+                <span class="endpoint-sub">Starting Point</span>
+                <strong class="endpoint-main">Main Entrance Gate (You are here)</strong>
+              </div>
+            </div>
+            <div class="panel-endpoint-divider" aria-hidden="true"></div>
+            <div class="panel-endpoint-item">
+              <div class="endpoint-indicator dest-indicator" aria-hidden="true"></div>
+              <div class="endpoint-details">
+                <span class="endpoint-sub">Selected Destination</span>
+                <strong class="endpoint-main" id="panelEndpointDestTitle">Select a Building</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selected Destination Summary -->
+          <div class="route-destination-summary">
+            <div class="summary-badge-row">
+              <span class="summary-badge" id="panelCategoryBadge">Academic Block</span>
+              <span class="summary-status" id="panelStatusBadge">Route Ready</span>
+            </div>
+            <h3 class="destination-name-large" id="panelDestinationTitle">Sathya Sai Block</h3>
+            <p class="destination-desc-small" id="panelDestinationDesc">1st Year - Science & Humanities department, lecture halls, and faculty rooms.</p>
+          </div>
+
+          <!-- Primary Navigation Actions -->
+          <div class="panel-actions">
+            <button class="start-nav-btn" id="startNavigationBtn">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="nav-btn-icon" aria-hidden="true">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              <span id="startNavBtnText">Start Navigation</span>
+            </button>
+            <button class="btn-back-to-map" id="backToMapBtn" title="Reset route and return to map overview">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <path d="M3 3v5h5"></path>
+              </svg>
+              <span>Back to Map</span>
+            </button>
+          </div>
+
+          <!-- Step-by-Step Walking Instructions -->
+          <div class="instructions-section">
+            <div class="instructions-header">
+              <h4>Step-by-Step Directions</h4>
+              <span class="steps-count-badge" id="stepsCountBadge">5 Steps</span>
+            </div>
+            <div class="instructions-list" id="instructionsList" role="list">
+              <!-- Dynamically populated by navigation.js -->
+            </div>
+          </div>
+
+          <!-- Panel Footer with Secondary Back to Home Link -->
+          <div class="panel-footer">
+            <a href="index.html" class="panel-back-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              <span>Back to Home</span>
+            </a>
+          </div>
+
+        </div>
+
+        <!-- Empty State Panel when No Destination is Selected -->
+        <div class="route-panel-empty hidden" id="routePanelEmpty">
+          <div class="empty-icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 8v4"></path>
+              <path d="M12 16h.01"></path>
+            </svg>
+          </div>
+          <h3>Select a Destination</h3>
+          <p>Tap any building marker on the map or select from the dropdown above to view the walking route and step-by-step directions.</p>
+          <a href="index.html" class="btn-secondary panel-empty-home-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span>Back to Home</span>
+          </a>
+        </div>
+
+      </aside>
+
+    </div>
+  </main>
+
+    <!-- Floating Chatbot Widget (RMK Campus AI Assistant) -->
+  <div class="chatbot-wrapper" id="chatbotWrapper">
+    <div class="chatbot-tooltip" id="chatbotTooltip">Need help? Ask Campus AI</div>
+    <button class="chatbot-button" id="chatbotBtn" aria-label="Open RMK Campus AI Assistant" title="Open RMK Campus AI Assistant">
+      <div class="chatbot-pulse"></div>
+      <div class="chatbot-icon-inner">
+        <!-- Chat Icon -->
+        <svg class="icon-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          <line x1="9" y1="10" x2="9.01" y2="10"></line>
+          <line x1="15" y1="10" x2="15.01" y2="10"></line>
+          <path d="M9.5 14a3.5 3.5 0 0 0 5 0"></path>
+        </svg>
+        <!-- Close (X) Icon -->
+        <svg class="icon-close hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </div>
+      <span class="chatbot-badge">AI</span>
+    </button>
+
+    <!-- Floating Chatbot Window -->
+    <div class="chatbot-window hidden" id="chatbotWindow" role="region" aria-label="RMK Campus AI Assistant">
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <div class="chat-bot-avatar" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"></path>
+              <rect x="4" y="8" width="16" height="12" rx="3"></rect>
+              <circle cx="9" cy="13" r="1.5" fill="currentColor"></circle>
+              <circle cx="15" cy="13" r="1.5" fill="currentColor"></circle>
+              <line x1="9" y1="17" x2="15" y2="17"></line>
+            </svg>
+            <span class="chat-online-dot"></span>
+          </div>
+          <div>
+            <h3 class="chat-title">RMK Campus AI</h3>
+            <p class="chat-subtitle">Smart Campus Assistant • Online</p>
+          </div>
+        </div>
+        <div class="chat-header-actions">
+          <button type="button" class="chat-btn-header" id="clearChatBtn" title="Clear conversation" aria-label="Clear conversation">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+          <button type="button" class="chat-btn-header" id="closeChatBtn" title="Close chat window" aria-label="Close chat window">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Suggestion Chips (Prompt Section 5) -->
+      <div class="chat-suggestions-bar" id="chatSuggestionsBar" aria-label="Quick questions">
+        <button type="button" class="chat-chip" data-query="Where is the library?">Find Library</button>
+        <button type="button" class="chat-chip" data-query="How do I reach the auditorium?">Find Auditorium</button>
+        <button type="button" class="chat-chip" data-query="Where is the Boys Mess?">Find Boys Mess</button>
+        <button type="button" class="chat-chip" data-query="Where is the Girls Mess?">Find Girls Mess</button>
+        <button type="button" class="chat-chip" data-query="Where are the hostels?">Find Hostels</button>
+        <button type="button" class="chat-chip" data-query="Where is the playground?">Find Playground</button>
+      </div>
+
+      <!-- Scrollable Message Body -->
+      <div class="chat-messages" id="chatMessages" role="log" aria-live="polite">
+        <!-- Rendered dynamically by chatbot.js -->
+      </div>
+
+      <!-- Typing Indicator -->
+      <div class="chat-typing-indicator hidden" id="chatTypingIndicator" aria-hidden="true">
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-label">Campus AI is typing...</span>
+      </div>
+
+      <!-- Chat Input Form -->
+      <form class="chat-input-form" id="chatInputForm">
+        <input 
+          type="text" 
+          class="chat-input" 
+          id="chatInput" 
+          placeholder="Ask where a building or facility is..." 
+          aria-label="Ask Campus Assistant" 
+          autocomplete="off"
+        />
+        <button type="submit" class="chat-send-btn" id="chatSendBtn" aria-label="Send message" title="Send message">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Toast Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <script src="navigation.js"></script>
+  <script src="chatbot.js"></script>
+</body>
+</html>
